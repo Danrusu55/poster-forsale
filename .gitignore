@@ -1,0 +1,8 @@
+cardinfo.py
+*.pyc
+temp.py
+docs/*
+docs
+__pycache__
+log.txt
+geckodriver.log

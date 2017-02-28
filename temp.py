@@ -1,15 +1,11 @@
 from imports import *
-from model import *
+from models import *
 
 
 def openFF(userAgent=r'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:48.0) Gecko/20100101 Firefox/48.0'):
-    #fp = webdriver.FirefoxProfile('C:\dropbox-poster\Dropbox\profile')
-    #fp.set_preference("general.useragent.override","{0}".format(userAgent))
-    driver = webdriver.Firefox()
-
     opts = Options()
     opts.add_argument("user-agent={0}".format(userAgent))
-    #driver = webdriver.Chrome(executable_path="/Users/danrusu/Dropbox/chromedriver-mac",chrome_options=opts)
+    driver = webdriver.Chrome(executable_path="/Users/danrusu/Dropbox/chromedriver-mac",chrome_options=opts)
     driver.implicitly_wait(10)
 
     driver.get("https://accounts.craigslist.org/logout")
@@ -18,17 +14,33 @@ def openFF(userAgent=r'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:48.0) Gecko/20100
     driver.find_element_by_xpath("/html/body/section/section/div/div[1]/form/div[3]/button").click()
     return driver
 
+
 # START APP
+
+db = sqlite3.connect('forsaledb.db')
+cursor = db.cursor()
+
+cursor.execute('SELECT * FROM campaigns')
+campaigns = cursor.fetchall()
+for campaign in campaigns:
+    cursor.execute('SELECT * ')
+
+
+
+# close connection
+db.close()
+
+
+
 driver = openFF()
 
 #campaigns = ['plumbing']
 # campaigns = ['concrete','carpentry','flooring']
-#campaign = 'plumbing'
 if campaign == 'plumbing':
     postingTitle = '[[PLUMBING]] PLUMBER 24/7! GREAT RATES! - PLUMBERS clogs ect'
     postingBody = 'NEED A LOCAL PLUMBER? <br><br>AVAILABLE 7 DAYS A WEEK/24 HOURS A DAY FOR EMERGENCIES. <br><br>Customer service is a top priority for us, which is why we have served our community well for over 10 years. With a highly trained team behind your back, you can rest assured knowing that your plumbing job will get done right the first time.<br><br>Services include:<br>Water Heater Repair & Install <br> Pipe Replacement & Repairs<br>Drain Cleaning & Unclogging<br>Leaky Faucets Or Pipes.<br>Fixture Installed Plumbing <br>Toilet Installation & Repair.<br>Tub, Shower & Sink Plumber. <br>Anything plumbing.<br>Drain Stoppages<br>Faucets Sinks, Tubs, Toilets<br>Garbage Disposals<br>Leak Repairs<br>Complete Drain Cleaning Services<br>Main Line Stoppages<br>Sink And Toilet Clogs<br>HydroJetting Service<br>Drain Maintenance<br><br>   No job is too big or too small for us, we do it all!<br> We Have Years Of Experience <br>You Name It - We Do It! <br>  Competitive Prices'
     postingGeo = 'Plumber Plumbing Plumbers'
-    imgPath = '/Users/danrusu/Dropbox/campaign-images/plumbing/002.jpg'
+    imgPath = '/Users/danrusu/Dropbox/campaign-images/elocal-images/plumbing.jpg'
 elif campaign == 'roofing':
     postingTitle = '((ROOF)) NEED A ROOFER? | ROOFING SERVICES | ROOFERS 24/7'
     postingBody = 'NEED A LOCAL ROOFER? <br><br>AVAILABLE 7 DAYS A WEEK/24 HOURS A DAY FOR EMERGENCIES. <br><br>Want dependable service? Our company has served this area for over 10 years, building long lasting relationships with our team of roofing experts. We can help you with any of your roofing needs.<br><br>CALL 7 DAYS A WEEK / 24 HOURS A DAY FOR EMERGENCIES.<br><br>Roofers for New Installs, Repairs, & Maintenance.<br><br>Services include:<br>New Roof Installations (All Types) <br>Re-Roofs<br>Roof Repairs<br>*Restorations* <br>Leak Detection & Repairs <br>*Emergency*<br><br>No job is too big or too small!<br>Roofers with Years Of Experience <br>Full Service Roofing<br>Competitive Pricing'
@@ -140,28 +152,6 @@ elif campaign == 'painting':
     postingGeo = 'Painting Painter Painters'
     imgPath = '/Users/danrusu/Dropbox/campaign-images/painting/1.jpg'
 
-'''
-driver.get('https://accounts.craigslist.org/login/home?viewProfile=0&viewAccount=0&filter_active=0&filter_cat=0&filter_date=2017-01&terms=')
-driver.find_element_by_xpath('//*/table/tbody/tr[1]/td[2]/div[1]/form[2]/input[2]')
-driver.find_element_by_xpath('/html/body/article/section/div[1]/table/tbody/tr[2]/td/div[2]/form/input[3]')
-driver.find_element_by_xpath('//*[@id=\"postingForm\"]/button')
-driver.find_element_by_xpath('//*[@id=\"publish_top\"]/button')
-driver.find_element_by_xpath('/html/body/article/section/form[1]/button')
-driver.find_element_by_id('cardNumber').send_keys(cardNum)
-driver.find_element_by_name('cvNumber').send_keys(cardCv)
-driver.find_element_by_name('expMonth').send_keys(cardMonth)
-driver.find_element_by_name('expYear').send_keys(cardYear)
-driver.find_element_by_name('cardFirstName').send_keys(cardFirstName)
-driver.find_element_by_name('cardLastName').send_keys(cardLastName)
-driver.find_element_by_name('cardAddress').send_keys(cardAddress)
-driver.find_element_by_name('cardCity').send_keys(cardCity)
-driver.find_element_by_name('cardState').send_keys(cardState)
-driver.find_element_by_name('cardPostal').send_keys(cardPostal)
-driver.find_element_by_name('contactName').send_keys(cardContactName)
-driver.find_element_by_name('contactPhone').send_keys(cardContactPhone)
-driver.find_element_by_xpath('//*[@id=\"presubmit\"]/button')
-
-'''
 for city in citiesArray:
     driver.get(city[0])
     try:
@@ -169,9 +159,9 @@ for city in citiesArray:
     except:
         pass
     WebDriverWait(driver, 5).until(EC.title_contains("choose type"))
-    driver.find_element_by_xpath("//*[@value='fsd']").click()
+    driver.find_element_by_xpath("/html/body/article/section/form/blockquote/label[7]/input").click()
     time.sleep(1)
-    driver.find_element_by_xpath("//*[@value='5']").click()
+    driver.find_element_by_xpath("/html/body/article/section/form/blockquote/label[24]/input").click()
     time.sleep(1)
 
     # subcity
@@ -256,5 +246,3 @@ for city in citiesArray:
     driver.find_element_by_name('contactPhone').send_keys(cardContactPhone)
 
     driver.find_element_by_name('finishForm').click()
-    url = driver.current_url
-    print('city posting completed. url is ' + url)
